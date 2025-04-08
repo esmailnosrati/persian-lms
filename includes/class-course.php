@@ -1,7 +1,39 @@
+<?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Persian LMS Course Management Class
+ *
+ * @package Persian_LMS
+ * @since 1.0.0
+ */
+class Persian_LMS_Course {
+    
+    public function __construct() {
+        add_filter('manage_course_posts_columns', array($this, 'add_course_columns'));
+        add_action('manage_course_posts_custom_column', array($this, 'manage_course_columns'), 10, 2);
+    }
+
+    public function add_course_columns($columns) {
+        $new_columns = array();
+        foreach ($columns as $key => $value) {
+            if ($key === 'date') {
+                $new_columns['instructor'] = 'مدرس';
+                $new_columns['featured'] = 'ویژه';
+            }
+            $new_columns[$key] = $value;
+        }
+        return $new_columns;
+    }
+
+    public function manage_course_columns($column, $post_id) {
+        switch ($column) {
             case 'instructor':
                 $instructor_id = get_post_field('post_author', $post_id);
                 $instructor = get_userdata($instructor_id);
-                echo $instructor ? $instructor->display_name : '---';
+                echo $instructor ? esc_html($instructor->display_name) : '---';
                 break;
             
             case 'featured':
@@ -11,16 +43,13 @@
         }
     }
 
-    // متدهای کمکی برای مدیریت دوره
-
     public static function get_enrolled_students($course_id) {
         global $wpdb;
-        
         return $wpdb->get_results($wpdb->prepare(
-            "SELECT u.* FROM {$wpdb->users} u
-             INNER JOIN {$wpdb->prefix}lms_enrollments e ON u.ID = e.user_id
-             WHERE e.course_id = %d AND e.status = 'active'
-             ORDER BY e.enrollment_date DESC",
+            "SELECT u.* FROM {$wpdb->users} u 
+            INNER JOIN {$wpdb->prefix}lms_enrollments e ON u.ID = e.user_id 
+            WHERE e.course_id = %d AND e.status = 'active' 
+            ORDER BY e.enrollment_date DESC",
             $course_id
         ));
     }
@@ -28,7 +57,6 @@
     public static function get_course_progress($course_id, $user_id) {
         global $wpdb;
         
-        // تعداد کل درس‌های دوره
         $curriculum = get_post_meta($course_id, '_course_curriculum', true);
         $total_lessons = 0;
         
@@ -40,10 +68,9 @@
             }
         }
 
-        // تعداد درس‌های تکمیل شده
         $completed_lessons = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}lms_progress
-             WHERE user_id = %d AND course_id = %d AND status = 'completed'",
+            "SELECT COUNT(*) FROM {$wpdb->prefix}lms_progress 
+            WHERE user_id = %d AND course_id = %d AND status = 'completed'",
             $user_id,
             $course_id
         ));
@@ -57,8 +84,8 @@
         // بررسی محدودیت تعداد دانشجو
         $max_students = get_post_meta($course_id, '_course_max_students', true);
         $current_students = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}lms_enrollments
-             WHERE course_id = %d AND status = 'active'",
+            "SELECT COUNT(*) FROM {$wpdb->prefix}lms_enrollments 
+            WHERE course_id = %d AND status = 'active'",
             $course_id
         ));
 
@@ -68,8 +95,8 @@
 
         // بررسی ثبت‌نام قبلی
         $existing = $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM {$wpdb->prefix}lms_enrollments
-             WHERE user_id = %d AND course_id = %d",
+            "SELECT id FROM {$wpdb->prefix}lms_enrollments 
+            WHERE user_id = %d AND course_id = %d",
             $user_id,
             $course_id
         ));
@@ -98,9 +125,8 @@
             // افزودن نقش دانشجو به کاربر
             $user = new WP_User($user_id);
             $user->add_role('lms_student');
-
-            do_action('lms_after_enrollment', $course_id, $user_id, $payment_id);
             
+            do_action('lms_after_enrollment', $course_id, $user_id, $payment_id);
             return true;
         }
 
@@ -111,7 +137,7 @@
         $course = get_post($course_id);
         $user = get_userdata($user_id);
         $instructor = get_userdata($course->post_author);
-
+        
         $subject = sprintf('خوش آمدید به دوره %s', $course->post_title);
         
         $message = sprintf(
@@ -180,10 +206,8 @@
 
                 do_action('lms_course_completed', $course_id, $user_id);
             }
-
             return true;
         }
-
         return false;
     }
 
@@ -210,4 +234,7 @@
     }
 }
 
-new Persian_LMS_Course();
+// Initialize the class
+if (class_exists('Persian_LMS_Course')) {
+    new Persian_LMS_Course();
+}

@@ -1,0 +1,25 @@
+persian-lms/
+├── assets/
+│   ├── css/
+│   │   ├── persian-lms.css
+│   │   └── persian-lms-admin.css
+│   ├── js/
+│   │   ├── persian-lms.js
+│   │   └── persian-lms-admin.js
+│   └── images/
+├── includes/
+│   ├── class-course.php
+│   ├── class-lesson.php
+│   ├── class-student.php
+│   ├── class-certificate.php
+│   └── db/
+│       └── schema.sql
+├── languages/
+│   ├── persian-lms.pot
+│   └── persian-lms-fa_IR.po
+├── templates/
+│   ├── student-dashboard.php
+│   ├── courses.php
+│   └── certificates.php
+├── persian-lms.php
+└── README.md

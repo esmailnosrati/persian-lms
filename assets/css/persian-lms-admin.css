@@ -1,0 +1,62 @@
+/* Admin Styles */
+.persian-lms-admin {
+    padding: 20px;
+}
+
+.persian-lms-admin-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+}
+
+.persian-lms-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.persian-lms-admin-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.persian-lms-admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.persian-lms-admin-table th,
+.persian-lms-admin-table td {
+    padding: 12px;
+    text-align: right;
+    border-bottom: 1px solid #ddd;
+}
+
+.persian-lms-admin-table th {
+    background: #f5f5f5;
+    font-weight: bold;
+}
+
+.persian-lms-admin-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.persian-lms-admin-form input[type="text"],
+.persian-lms-admin-form input[type="number"],
+.persian-lms-admin-form select,
+.persian-lms-admin-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.persian-lms-admin-form .button {
+    margin-top: 10px;
+}
